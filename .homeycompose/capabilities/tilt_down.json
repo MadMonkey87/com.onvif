@@ -1,0 +1,11 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Tilt down",
+        "de": "Nach Unten neigen"
+    },
+    "getable": false,
+    "setable": true,
+    "uiComponent": "button",
+    "icon": "/assets/down-arrow.svg"
+}

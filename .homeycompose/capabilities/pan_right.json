@@ -1,0 +1,11 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Pan right",
+        "de": "Nach rechts schwenken"
+    },
+    "getable": false,
+    "setable": true,
+    "uiComponent": "button",
+    "icon": "/assets/right-arrow.svg"
+}

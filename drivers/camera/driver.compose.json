@@ -15,7 +15,11 @@
         "event_time",
         "tamper_time",
         "date_time",
-        "button.syncTime"
+        "button.syncTime",
+        "tilt_up",
+        "pan_left",
+        "pan_right",
+        "tilt_down"
     ],
     "capabilitiesOptions":
     {
@@ -629,7 +633,48 @@
                 "it": "L'ID inviato dalla telecamera per l'evento ANALYTICSSERVICE. Lascia vuoto per abbinare qualsiasi. Multipli separati con una virgola."
             }
         }]
-    }],
+    },
+    {
+        "type": "group",
+        "label":
+        {
+            "en": "Pan, tilt & zoom",
+            "de": "Schwenken, neigen & zoomen"
+        },
+        "children": [
+            {
+                "id": "hasPTZ",
+                "type": "label",
+                "label":
+                {
+                    "en": "Supported",
+                    "de": "Unterstützt"
+                },
+                "value": "-"
+            },
+            {
+                "id": "panRange",
+                "type": "label",
+                "label":
+                {
+                    "en": "Pan range",
+                    "de": "Schwenkbereich"
+                },
+                "value": "-"
+            },
+            {
+                "id": "tiltRange",
+                "type": "label",
+                "label":
+                {
+                    "en": "Tilt range",
+                    "de": "Neigebereich"
+                },
+                "value": "-"
+            }
+        ]
+    }
+    ],
     "images":
     {
         "large": "/drivers/camera/assets/images/large.png",

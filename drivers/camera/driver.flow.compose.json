@@ -1,5 +1,6 @@
 {
-    "triggers": [{
+    "triggers": [
+        {
             "id": "motionEnabledTrigger",
             "title": {
                 "en": "Motion enabled",
@@ -43,16 +44,18 @@
                 "nl": "Snapshot beschikbaar",
                 "it": "Immagine Istantanea pronta"
             },
-            "tokens": [{
-                "name": "image",
-                "type": "image",
-                "title": {
-                    "en": "Snapshot",
-                    "de": "Schnappschuss",
-                    "nl": "Snapshot",
-                    "it": "Immagine Istantanea"
+            "tokens": [
+                {
+                    "name": "image",
+                    "type": "image",
+                    "title": {
+                        "en": "Snapshot",
+                        "de": "Schnappschuss",
+                        "nl": "Snapshot",
+                        "it": "Immagine Istantanea"
+                    }
                 }
-            }]
+            ]
         },
         {
             "id": "eventShotReadyTrigger",
@@ -68,19 +71,22 @@
                 "nl": "Bewegings snapshot beschikbaar",
                 "it": "Immagine di Movimento pronta"
             },
-            "tokens": [{
-                "name": "eventImage",
-                "type": "image",
-                "title": {
-                    "en": "Motion snapshot",
-                    "de": "Momentaufnahme",
-                    "nl": "Bewegings snapshot",
-                    "it": "Immagine di Movimento"
+            "tokens": [
+                {
+                    "name": "eventImage",
+                    "type": "image",
+                    "title": {
+                        "en": "Motion snapshot",
+                        "de": "Momentaufnahme",
+                        "nl": "Bewegings snapshot",
+                        "it": "Immagine di Movimento"
+                    }
                 }
-            }]
+            ]
         }
     ],
-    "conditions": [{
+    "conditions": [
+        {
             "id": "motionEnabledCondition",
             "title": {
                 "en": "Motion is enabled",
@@ -109,20 +115,22 @@
                 "nl": "Bewegingssnapshot is !{{binnen|niet binnen}} [[waitTime]] seconden !((klaar|gereed}}",
                 "it": "L'istantanea in movimento !{{è pronta|non è pronta}} entro [[waitTime]] secondi"
             },
-            "args": [{
-                "type": "number",
-                "name": "waitTime",
-                "value": 0,
-                "units": "seconds",
-                "min": 0,
-                "max": 30,
-                "step": 1,
-                "placeholder": "Seconds to wait"
-            }]
-
+            "args": [
+                {
+                    "type": "number",
+                    "name": "waitTime",
+                    "value": 0,
+                    "units": "seconds",
+                    "min": 0,
+                    "max": 30,
+                    "step": 1,
+                    "placeholder": "Seconds to wait"
+                }
+            ]
         }
     ],
-    "actions": [{
+    "actions": [
+        {
             "id": "motionEnableAction",
             "title": {
                 "en": "Enable motion",
@@ -182,6 +190,116 @@
                 "nl": "Bewegingssnapshot bijwerken",
                 "it": "Aggiorna istantanea in movimento"
             }
+        },
+        {
+            "id": "relativePTZAction",
+            "title": {
+                "en": "Pan, tilt and zoom (relative)",
+                "de": "Schwenken, neigen und zoomen (relativ)"
+            },
+            "titleFormatted": {
+                "en": "Pan by [[pan]], tilt by [[tilt]] and zoom by [[zoom]]",
+                "de": "Schenken um [[pan]], neigen um [[tilt]] und zoomen um [[zoom]]"
+            },
+            "args": [
+                {
+                    "type": "range",
+                    "name": "pan",
+                    "title": {
+                        "en": "Pan",
+                        "de": "Schwenken"
+                    },
+                    "min": -1,
+                    "max": 1,
+                    "step": 0.01,
+                    "label": "%",
+                    "labelMultiplier": 100,
+                    "labelDecimals": 0
+                },
+                {
+                    "type": "range",
+                    "name": "tilt",
+                    "title": {
+                        "en": "Tilt",
+                        "de": "Neigen"
+                    },
+                    "min": -1,
+                    "max": 1,
+                    "step": 0.01,
+                    "label": "%",
+                    "labelMultiplier": 100,
+                    "labelDecimals": 0
+                },
+                {
+                    "type": "range",
+                    "name": "zoom",
+                    "title": {
+                        "en": "Zoom",
+                        "de": "Zoomen"
+                    },
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.01,
+                    "label": "%",
+                    "labelMultiplier": 100,
+                    "labelDecimals": 0
+                }
+            ]
+        },
+        {
+            "id": "absolutePTZAction",
+            "title": {
+                "en": "Pan, tilt and zoom (absolute)",
+                "de": "Schwenken, neigen und zoomen (absolute)"
+            },
+            "titleFormatted": {
+                "en": "Pan to [[pan]], tilt to [[tilt]] and zoom to [[zoom]]",
+                "de": "Schenken zu [[pan]], neigen zu [[tilt]] und zoomen zu [[zoom]]"
+            },
+            "args": [
+                {
+                    "type": "range",
+                    "name": "pan",
+                    "title": {
+                        "en": "Pan",
+                        "de": "Schwenken"
+                    },
+                    "min": -1,
+                    "max": 1,
+                    "step": 0.01,
+                    "label": "%",
+                    "labelMultiplier": 100,
+                    "labelDecimals": 0
+                },
+                {
+                    "type": "range",
+                    "name": "tilt",
+                    "title": {
+                        "en": "Tilt",
+                        "de": "Neigen"
+                    },
+                    "min": -1,
+                    "max": 1,
+                    "step": 0.01,
+                    "label": "%",
+                    "labelMultiplier": 100,
+                    "labelDecimals": 0
+                },
+                {
+                    "type": "range",
+                    "name": "zoom",
+                    "title": {
+                        "en": "Zoom",
+                        "de": "Zoomen"
+                    },
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.01,
+                    "label": "%",
+                    "labelMultiplier": 100,
+                    "labelDecimals": 0
+                }
+            ]
         }
     ]
 }

@@ -256,5 +256,8 @@
   },
   "1.1.32": {
     "en": "Added Minimum On Time to advanced settings."
+  },
+  "1.2.0": {
+    "en": "Added support to pan, tilt and zoom."
   }
 }

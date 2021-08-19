@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.onvif",
-  "version": "1.1.32",
+  "version": "1.2.0",
   "compatibility": ">=3.0.0",
   "sdk": 2,
   "brandColor": "#FF7D4B",
@@ -42,6 +42,14 @@
     "email": "ady@rockall.plus.com"
   },
   "contributors": {
+    "developers": [
+      {
+        "name": "adyrock"
+      },
+      {
+        "name": "MadMonkey87"
+      }
+    ],
     "translators": [
       {
         "name": "🇩🇪 - Markus Mahr"
@@ -314,6 +322,126 @@
             "filter": "driver_id=camera"
           }
         ]
+      },
+      {
+        "id": "relativePTZAction",
+        "title": {
+          "en": "Pan, tilt and zoom (relative)",
+          "de": "Schwenken, neigen und zoomen (relativ)"
+        },
+        "titleFormatted": {
+          "en": "Pan by [[pan]], tilt by [[tilt]] and zoom by [[zoom]]",
+          "de": "Schenken um [[pan]], neigen um [[tilt]] und zoomen um [[zoom]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=camera"
+          },
+          {
+            "type": "range",
+            "name": "pan",
+            "title": {
+              "en": "Pan",
+              "de": "Schwenken"
+            },
+            "min": -1,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          },
+          {
+            "type": "range",
+            "name": "tilt",
+            "title": {
+              "en": "Tilt",
+              "de": "Neigen"
+            },
+            "min": -1,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          },
+          {
+            "type": "range",
+            "name": "zoom",
+            "title": {
+              "en": "Zoom",
+              "de": "Zoomen"
+            },
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          }
+        ]
+      },
+      {
+        "id": "absolutePTZAction",
+        "title": {
+          "en": "Pan, tilt and zoom (absolute)",
+          "de": "Schwenken, neigen und zoomen (absolute)"
+        },
+        "titleFormatted": {
+          "en": "Pan to [[pan]], tilt to [[tilt]] and zoom to [[zoom]]",
+          "de": "Schenken zu [[pan]], neigen zu [[tilt]] und zoomen zu [[zoom]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=camera"
+          },
+          {
+            "type": "range",
+            "name": "pan",
+            "title": {
+              "en": "Pan",
+              "de": "Schwenken"
+            },
+            "min": -1,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          },
+          {
+            "type": "range",
+            "name": "tilt",
+            "title": {
+              "en": "Tilt",
+              "de": "Neigen"
+            },
+            "min": -1,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          },
+          {
+            "type": "range",
+            "name": "zoom",
+            "title": {
+              "en": "Zoom",
+              "de": "Zoomen"
+            },
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          }
+        ]
       }
     ]
   },
@@ -333,7 +461,11 @@
         "event_time",
         "tamper_time",
         "date_time",
-        "button.syncTime"
+        "button.syncTime",
+        "tilt_up",
+        "pan_left",
+        "pan_right",
+        "tilt_down"
       ],
       "capabilitiesOptions": {
         "button.syncTime": {
@@ -880,6 +1012,42 @@
               }
             }
           ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Pan, tilt & zoom",
+            "de": "Schwenken, neigen & zoomen"
+          },
+          "children": [
+            {
+              "id": "hasPTZ",
+              "type": "label",
+              "label": {
+                "en": "Supported",
+                "de": "Unterstützt"
+              },
+              "value": "-"
+            },
+            {
+              "id": "panRange",
+              "type": "label",
+              "label": {
+                "en": "Pan range",
+                "de": "Schwenkbereich"
+              },
+              "value": "-"
+            },
+            {
+              "id": "tiltRange",
+              "type": "label",
+              "label": {
+                "en": "Tilt range",
+                "de": "Neigebereich"
+              },
+              "value": "-"
+            }
+          ]
         }
       ],
       "images": {
@@ -926,6 +1094,28 @@
       "uiComponent": "toggle",
       "icon": "/assets/motion.svg"
     },
+    "pan_left": {
+      "type": "boolean",
+      "title": {
+        "en": "Pan left",
+        "de": "Nach links schwenken"
+      },
+      "getable": false,
+      "setable": true,
+      "uiComponent": "button",
+      "icon": "/assets/left-arrow.svg"
+    },
+    "pan_right": {
+      "type": "boolean",
+      "title": {
+        "en": "Pan right",
+        "de": "Nach rechts schwenken"
+      },
+      "getable": false,
+      "setable": true,
+      "uiComponent": "button",
+      "icon": "/assets/right-arrow.svg"
+    },
     "tamper_time": {
       "type": "string",
       "title": {
@@ -937,6 +1127,28 @@
       "icon": "/assets/tamper_time.svg",
       "getable": true,
       "setable": false
+    },
+    "tilt_down": {
+      "type": "boolean",
+      "title": {
+        "en": "Tilt down",
+        "de": "Nach Unten neigen"
+      },
+      "getable": false,
+      "setable": true,
+      "uiComponent": "button",
+      "icon": "/assets/down-arrow.svg"
+    },
+    "tilt_up": {
+      "type": "boolean",
+      "title": {
+        "en": "Tilt up",
+        "de": "Nach Oben neigen"
+      },
+      "getable": false,
+      "setable": true,
+      "uiComponent": "button",
+      "icon": "/assets/up-arrow.svg"
     }
   }
 }

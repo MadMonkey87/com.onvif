@@ -16,12 +16,12 @@ const nodemailer = require("nodemailer");
 
 const http = require('http');
 
-class MyApp extends Homey.App
+class OnvifApp extends Homey.App
 {
 
     async onInit()
     {
-        this.log('MyApp is running...');
+        this.log('OnvifApp is running...');
 
         this.pushServerPort = 9998;
         this.discoveredDevices = [];
@@ -531,6 +531,31 @@ class MyApp extends Homey.App
         });
     }
 
+    getPTZConfigurations(cam_obj)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            try
+            {
+                cam_obj.getConfigurations((err, configurations, xml) =>
+                {
+                    if (err)
+                    {
+                        return reject(err);
+                    }
+                    else
+                    {
+                        return resolve(configurations);
+                    }
+                });
+            }
+            catch (err)
+            {
+                return reject(err);
+            }
+        });
+    }
+
     hasEventTopics(cam_obj)
     {
         return new Promise((resolve, reject) =>
@@ -993,4 +1018,4 @@ class MyApp extends Homey.App
     }
 }
 
-module.exports = MyApp;
+module.exports = OnvifApp;

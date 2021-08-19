@@ -1,0 +1,11 @@
+{
+    "type": "boolean",
+    "title": {
+        "en": "Pan left",
+        "de": "Nach links schwenken"
+    },
+    "getable": false,
+    "setable": true,
+    "uiComponent": "button",
+    "icon": "/assets/left-arrow.svg"
+}

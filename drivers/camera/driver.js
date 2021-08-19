@@ -20,7 +20,6 @@ class CameraDriver extends Homey.Driver
             .register()
             .registerRunListener(async (args, state) =>
             {
-
                 return await args.device.getCapabilityValue('motion_enabled'); // Promise<boolean>
             });
 
@@ -29,7 +28,6 @@ class CameraDriver extends Homey.Driver
             .register()
             .registerRunListener(async (args, state) =>
             {
-
                 let remainingTime = args.waitTime * 10;
                 while ((remainingTime > 0) && args.device.updatingEventImage)
                 {
@@ -55,7 +53,6 @@ class CameraDriver extends Homey.Driver
             .register()
             .registerRunListener(async (args, state) =>
             {
-
                 console.log("motionDisabledAction");
                 args.device.onCapabilityMotionEnable(false, null);
                 return await args.device.setCapabilityValue('motion_enabled', false); // Promise<void>
@@ -66,7 +63,6 @@ class CameraDriver extends Homey.Driver
             .register()
             .registerRunListener(async (args, state) =>
             {
-
                 let err = await args.device.nowImage.update();
                 if (!err)
                 {
@@ -87,8 +83,23 @@ class CameraDriver extends Homey.Driver
             .register()
             .registerRunListener(async (args, state) =>
             {
-
                 return args.device.updateMotionImage(0);
+            });
+
+        this.absolutePTZAction = new Homey.FlowCardAction('absolutePTZAction');
+        this.absolutePTZAction
+            .register()
+            .registerRunListener(async (args, state) =>
+            {
+                return await args.device.performAbsolutePTZAction(args.pan, args.tilt, args.zoom);
+            });
+
+        this.relativePTZAction = new Homey.FlowCardAction('relativePTZAction');
+        this.relativePTZAction
+            .register()
+            .registerRunListener(async (args, state) =>
+            {
+                return await args.device.performRelativePTZAction(args.pan, args.tilt, args.zoom);
             });
     }
 

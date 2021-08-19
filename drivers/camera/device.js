@@ -107,6 +107,11 @@ class CameraDevice extends Homey.Device
 
         this.registerCapabilityListener('motion_enabled', this.onCapabilityMotionEnable.bind(this));
 
+        this.registerCapabilityListener('pan_left', this.performRelativePTZAction.bind(this, -0.1, 0, 0));
+        this.registerCapabilityListener('pan_right', this.performRelativePTZAction.bind(this, 0.1, 0, 0));
+        this.registerCapabilityListener('tilt_up', this.performRelativePTZAction.bind(this, 0, 0.1, 0));
+        this.registerCapabilityListener('tilt_down', this.performRelativePTZAction.bind(this, 0, -0.1, 0));
+
         this.motionEnabledTrigger = new Homey.FlowCardTriggerDevice('motionEnabledTrigger');
         this.motionEnabledTrigger.register();
 
@@ -429,6 +434,11 @@ class CameraDevice extends Homey.Device
                                     this.supportPushEvent = true;
                                     Homey.app.updateLog("** Analytics supported on " + this.name);
                                 }
+                                if (namespaceSplitted[1] == 'ptz')
+                                {
+                                    this.supportPTZ = true;
+                                    Homey.app.updateLog("** PTZ supported on " + this.name);
+                                }
                             }
                             else
                             {
@@ -440,6 +450,28 @@ class CameraDevice extends Homey.Device
                 catch (err)
                 {
                     Homey.app.updateLog("Get camera services error (" + this.name + "): " + err.stack, 0);
+                }
+
+                if(this.supportPTZ){
+                    try
+                    {
+                        let ptzConfigurations = await Homey.app.getPTZConfigurations(this.cam);
+                        Homey.app.updateLog("** PTZ configurations " + this.name + " = " + Homey.app.varToString(ptzConfigurations));
+
+                        this.tiltRangeMin = parseFloat(ptzConfigurations[Object.keys(ptzConfigurations)[0]]['panTiltLimits']['XRange'][['min']]);
+                        this.tiltRangeMax = parseFloat(ptzConfigurations[Object.keys(ptzConfigurations)[0]]['panTiltLimits']['XRange'][['max']]);
+                        this.panRangeMin = parseFloat(ptzConfigurations[Object.keys(ptzConfigurations)[0]]['panTiltLimits']['YRange'][['min']]);
+                        this.panRangeMax = + parseFloat(ptzConfigurations[Object.keys(ptzConfigurations)[0]]['panTiltLimits']['YRange'][['max']]);
+                    }
+                    catch (err)
+                    {
+                        Homey.app.updateLog("Get PTZ configurations error (" + this.name + "): " + err.stack, 0);
+                    }
+                }else {
+                    this.tiltRangeMin = 0;
+                    this.tiltRangeMax = 0;
+                    this.panRangeMin = 0;
+                    this.panRangeMax = 0;
                 }
 
                 //if (addingCamera) {
@@ -507,9 +539,10 @@ class CameraDevice extends Homey.Device
                     'notificationMethods': notificationMethods,
                     'notificationTypes': supportedEvents.toString(),
                     'hasSnapshot': this.snapshotSupported,
+                    'hasPTZ': this.supportPTZ.toString(),
+                    'panRange': this.panRangeMin + ' <-> ' + this.panRangeMax,
+                    'tiltRange': this.tiltRangeMin + ' <-> ' + this.tiltRangeMax
                 });
-
-                let settings = this.getSettings();
 
                 if (!this.hasMotion)
                 {
@@ -541,6 +574,44 @@ class CameraDevice extends Homey.Device
                     if (!this.hasCapability('event_time'))
                     {
                         this.addCapability('event_time');
+                    }
+                }
+
+                if(!this.supportPTZ){
+                    Homey.app.updateLog("Removing unsupported ptz capabilities for " + this.name);
+
+                    if (this.hasCapability('pan_left'))
+                    {
+                        this.removeCapability('pan_left');
+                    }
+                    if (this.hasCapability('pan_right'))
+                    {
+                        this.removeCapability('pan_right');
+                    }
+                    if (this.hasCapability('tilt_up'))
+                    {
+                        this.removeCapability('tilt_up');
+                    }
+                    if (this.hasCapability('tilt_down'))
+                    {
+                        this.removeCapability('tilt_down');
+                    }
+                } else {
+                    if (!this.hasCapability('pan_left'))
+                    {
+                        this.addCapability('pan_left');
+                    }
+                    if (!this.hasCapability('pan_right'))
+                    {
+                        this.addCapability('pan_right');
+                    }
+                    if (!this.hasCapability('tilt_up'))
+                    {
+                        this.addCapability('tilt_up');
+                    }
+                    if (!this.hasCapability('tilt_down'))
+                    {
+                        this.addCapability('tilt_down');
                     }
                 }
 
@@ -786,6 +857,52 @@ class CameraDevice extends Homey.Device
             Homey.app.updateLog("** Event STILL Processing last image (" + this.name + ") **", 0);
             return false;
         }
+    }
+
+    async performRelativePTZAction(pan, tilt, zoom){
+        if(!this.cam){
+            return false;
+        }
+
+        let vector = this.transformPTZVector(pan, tilt, zoom);
+        Homey.app.updateLog("perform relative PTZ (" + this.name + "): " + Homey.app.varToString(vector));
+        await this.cam.relativeMove(vector,(err)=>{
+            if (err)
+            {
+                Homey.app.log("perform relative PTZ (" + this.name + "): " + Homey.app.varToString(err), 0);
+            }
+        });
+
+        return true;
+    }
+
+    async performAbsolutePTZAction(pan, tilt, zoom){
+        if(!this.cam){
+            return false;
+        }
+
+        let vector = this.transformPTZVector(pan, tilt, zoom);
+        Homey.app.updateLog("perform absolute PTZ (" + this.name + "): " + Homey.app.varToString(vector));
+        await this.cam.absoluteMove(vector,(err)=>{
+            if (err)
+            {
+                Homey.app.log("perform absolute PTZ (" + this.name + "): " + Homey.app.varToString(err), 0);
+            }
+        });
+
+        return true;
+
+    }
+
+    transformPTZVector(pan, tilt, zoom){
+
+        pan = pan < 0 ? pan * this.panRangeMin * -1 : pan * this.panRangeMax;
+        pan = Math.min(Math.max(pan, this.panRangeMin), this.panRangeMax);
+
+        tilt = tilt < 0 ? tilt * this.tiltRangeMin * -1 : tilt * this.tiltRangeMax;
+        tilt = Math.min(Math.max(tilt, this.tiltRangeMin), this.tiltRangeMax);
+
+        return {x: pan, y: tilt, zoom: zoom};
     }
 
     async triggerMotionEvent(dataName, dataValue)

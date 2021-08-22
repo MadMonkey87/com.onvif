@@ -73,6 +73,7 @@ class CameraDevice extends Homey.Device
         this.channel = settings.channel;
         this.token = settings.token;
         this.userSnapUri = settings.userSnapUri;
+        this.ptzQuickActionAmount = settings.ptzQuickActionAmount;
         this.eventTN = this.getEventTN(settings, false);
         this.eventObjectID = settings.objectID;
         if (this.eventTN !== "RuleEngine/FieldDetector/ObjectsInside:IsInside")
@@ -107,10 +108,10 @@ class CameraDevice extends Homey.Device
 
         this.registerCapabilityListener('motion_enabled', this.onCapabilityMotionEnable.bind(this));
 
-        this.registerCapabilityListener('pan_left', this.performRelativePTZAction.bind(this, -0.1, 0, 0));
-        this.registerCapabilityListener('pan_right', this.performRelativePTZAction.bind(this, 0.1, 0, 0));
-        this.registerCapabilityListener('tilt_up', this.performRelativePTZAction.bind(this, 0, 0.1, 0));
-        this.registerCapabilityListener('tilt_down', this.performRelativePTZAction.bind(this, 0, -0.1, 0));
+        this.registerCapabilityListener('pan_left', this.performRelativePTZAction.bind(this, this.ptzQuickActionAmount * -1, 0, 0));
+        this.registerCapabilityListener('pan_right', this.performRelativePTZAction.bind(this, this.ptzQuickActionAmount, 0, 0));
+        this.registerCapabilityListener('tilt_up', this.performRelativePTZAction.bind(this, 0, this.ptzQuickActionAmount, 0));
+        this.registerCapabilityListener('tilt_down', this.performRelativePTZAction.bind(this, 0, this.ptzQuickActionAmount * -1, 0));
 
         this.motionEnabledTrigger = new Homey.FlowCardTriggerDevice('motionEnabledTrigger');
         this.motionEnabledTrigger.register();
@@ -302,6 +303,11 @@ class CameraDevice extends Homey.Device
                     return;
                 });
             }
+        }
+
+        if (changedKeysArr.indexOf("ptzQuickActionAmount") >= 0)
+        {
+            this.ptzQuickActionAmount = newSettingsObj.ptzQuickActionAmount;
         }
 
         if (changedKeysArr.indexOf("preferPullEvents") >= 0)

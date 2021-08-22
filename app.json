@@ -1046,6 +1046,24 @@
                 "de": "Neigebereich"
               },
               "value": "-"
+            },
+            {
+              "id": "ptzQuickActionAmount",
+              "type": "number",
+              "label": {
+                "en": "movement amount per click",
+                "de": "Bewegung pro Klick"
+              },
+              "hint": {
+                "en": "Defines how much the camera will be panned/tilted when using the UI.",
+                "de": "Definiert wie stark die Kamera geschwenkt/geneigt wird bei der Steuerung in der Benutzeroberfläche."
+              },
+              "value": 0.05,
+              "min": 0.01,
+              "max": 0.2,
+              "units": {
+                "en": "%"
+              }
             }
           ]
         }
